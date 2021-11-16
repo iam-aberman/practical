@@ -26,11 +26,11 @@ def compute_estimate_using_least_squares():
 def compute_estimate_using_extended_least_squares():
     raw_measurements = prepare_data("ROVER1.GK", "BASE1.GK", [0])
     z, h = prepare_estimation_data(raw_measurements)
-
-    u, sigma, v = np.linalg.svd(h)
+    extended_h = np.hstack((h, z))
+    u, sigma, v = np.linalg.svd(extended_h)
     min_singular_value = sigma.min()
     identity = np.matrix(np.identity(h.shape[1]))
-    estimate = -1 * (h.getT() * h - (min_singular_value ** 2) * identity).I * h.getT() * z
+    estimate = 1 * (h.getT() * h - (min_singular_value ** 2) * identity).I * h.getT() * z
     return estimate, compute_root_mean_square_deviation(h * estimate, z)
 
 
@@ -41,5 +41,5 @@ if __name__ == "__main__":
     print("\n")
 
     estimate_elsm, rmsd_elsm = compute_estimate_using_extended_least_squares()
-    print("Best estimate found using ELSM is ", estimate_lsm.flatten())
-    print("Root-mean-square deviation = ", rmsd_lsm)
+    print("Best estimate found using ELSM is ", estimate_elsm.flatten())
+    print("Root-mean-square deviation = ", rmsd_elsm)
