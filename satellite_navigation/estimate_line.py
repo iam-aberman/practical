@@ -12,8 +12,10 @@ def prepare_data(rover_filename, base_filename, columns_to_delete):
     full_rover_data = np.delete(full_rover_data, columns_to_delete, axis=1)
     full_base_data = np.delete(full_base_data, row_to_delete_for_base, axis=0)
     full_base_data = np.delete(full_base_data, columns_to_delete, axis=1)
-    return full_rover_data - full_base_data
-
+    ret_val = full_rover_data - full_base_data
+    for i in range(ret_val.shape[0]):
+        ret_val[i, 0] = full_rover_data[i, 0]
+    return ret_val
 
 def prepare_estimation_data(raw_measurements):
     y = np.matrix(raw_measurements[:, 1])
